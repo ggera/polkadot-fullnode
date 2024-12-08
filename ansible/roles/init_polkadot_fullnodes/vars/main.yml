@@ -1,0 +1,12 @@
+---
+# vars file for polkadot_fullnodes
+polkadot_user: "polkadot"
+data_dir: "/mnt/polkadot_full_node_data"
+log_dir: "/var/log/polkadot"
+install_dir: "/opt/polkadot"
+snapshot_url: "https://dot-rocksdb.polkashots.io/snapshot"
+service_name: "polkadot"
+p2p_port: "30334"
+rpc_port: "9954"
+prometheus_port: "9616"
+new_ansible_port: "255"

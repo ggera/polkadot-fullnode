@@ -1,0 +1,40 @@
+
+- name: Download polkadot binary
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ polkadot_base_url }}/polkadot"
+    dest: /tmp/polkadot
+    mode: "0755"
+
+- name: Download polkadot-execute-worker binary
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ polkadot_base_url }}/polkadot-execute-worker"
+    dest: /tmp/polkadot-execute-worker
+    mode: "0755"
+
+- name: Download polkadot-prepare-worker binary
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ polkadot_base_url }}/polkadot-prepare-worker"
+    dest: /tmp/polkadot-prepare-worker
+    mode: "0755"
+
+- name: Move Polkadot binaries to installation directory
+  become: true
+  ansible.builtin.command:
+    cmd: "mv -f /tmp/polkadot* {{ install_dir }}"
+  args:
+    creates: "{{ install_dir }}/polkadot"
+
+- name: Reload systemd daemon
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Ensure Polkadot node service is running
+  become: true
+  ansible.builtin.systemd:
+    name: polkadot
+    state: started
+    enabled: true

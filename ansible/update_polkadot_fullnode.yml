@@ -1,0 +1,9 @@
+---
+- hosts: all
+  gather_facts: false
+  serial: 1
+  vars:
+    kilt_node_image: kiltprotocol/kilt-node:1.13.2
+    node_type: bootnode
+  roles:
+    - update_polkadot_fullnodes

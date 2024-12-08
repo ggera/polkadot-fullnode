@@ -1,0 +1,63 @@
+---
+- name: Install required packages
+  become: yes
+  ansible.builtin.package:
+    name:
+      - curl
+      - lz4
+      - tar
+      - systemd
+    state: present
+
+- name: Create Polkadot system user
+  ansible.builtin.user:
+    name: "{{ polkadot_user }}"
+    password: "{{ lookup('env', 'POLKADOT_USER_PASSWORD', default=Undefined) | password_hash('sha512') }}"
+    state: present
+    system: yes
+    create_home: yes
+    groups:
+      - sudo
+      - sshuser
+    shell: /bin/bash
+
+- name: Ensure /opt/polkadot directory exists
+  become: true
+  ansible.builtin.file:
+    path: "{{ install_dir }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0755"
+
+- name: Create Polkadot data directory
+  ansible.builtin.file:
+    path: "{{ data_dir }}"
+    state: directory
+    owner: "{{ polkadot_user }}"
+    group: "{{ polkadot_user }}"
+    mode: "0755"
+
+- name: Create Polkadot log directory
+  ansible.builtin.file:
+    path: "{{ log_dir }}"
+    state: directory
+    owner: "{{ polkadot_user }}"
+    group: "{{ polkadot_user }}"
+    mode: "0755"
+
+#- name: Download and extract Polkadot Full Node Rocksdb snapshot  (Optional)
+#  ansible.builtin.shell: |
+#    curl -o - -L {{ snapshot_url }} | lz4 -c -d - | tar -x -C {{ data_dir }}
+#  args:
+#    executable: /bin/bash
+
+- name: Create systemd service
+  ansible.builtin.template:
+    src: polkadot.service.j2
+    dest: "/etc/systemd/system/{{ service_name }}.service"
+    mode: "0644"
+
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true

@@ -1,0 +1,26 @@
+[Unit]
+Description=Polkadot Full Node
+
+[Service]
+User={{ polkadot_user }}
+ExecStart=/opt/polkadot/polkadot \
+  --name "gerops" \
+  --port {{ p2p_port }} \
+  --base-path "{{ data_dir }}" \
+  --database RocksDb \
+  --sync warp \
+  --rpc-methods safe \
+  --rpc-cors all \
+  --rpc-external \
+  --chain polkadot \
+  --rpc-port {{ rpc_port }} \
+  --prometheus-port {{ prometheus_port }} \
+  --prometheus-external
+Restart=always
+RestartSec=60
+LimitNOFILE=65536
+StandardOutput=append:{{ log_dir }}/polkadot.log
+StandardError=append:{{ log_dir }}/polkadot-error.log
+
+[Install]
+WantedBy=multi-user.target
