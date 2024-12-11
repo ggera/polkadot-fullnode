@@ -1,6 +1,5 @@
 ---
 - name: Install required packages
-  become: yes
   ansible.builtin.package:
     name:
       - curl
@@ -9,20 +8,7 @@
       - systemd
     state: present
 
-- name: Create Polkadot system user
-  ansible.builtin.user:
-    name: "{{ polkadot_user }}"
-    password: "{{ lookup('env', 'POLKADOT_USER_PASSWORD', default=Undefined) | password_hash('sha512') }}"
-    state: present
-    system: yes
-    create_home: yes
-    groups:
-      - sudo
-      - sshuser
-    shell: /bin/bash
-
 - name: Ensure /opt/polkadot directory exists
-  become: true
   ansible.builtin.file:
     path: "{{ install_dir }}"
     state: directory
@@ -45,6 +31,43 @@
     owner: "{{ polkadot_user }}"
     group: "{{ polkadot_user }}"
     mode: "0755"
+
+- name: Install UFW
+  ansible.builtin.package:
+    name: ufw
+    state: present
+
+- name: Allow port 30334
+  ansible.builtin.ufw:
+    rule: allow
+    port: "{{ p2p_port }}"
+    proto: tcp
+
+- name: Allow port 9954
+  ansible.builtin.ufw:
+    rule: allow
+    port: "{{ rpc_port }}"
+    proto: tcp
+
+- name: Allow port 9616
+  ansible.builtin.ufw:
+    rule: allow
+    port: "{{ prometheus_port }}"
+    proto: tcp
+
+- name: Enable UFW
+  ansible.builtin.ufw:
+    state: enabled
+    policy: allow
+    logging: on
+
+- name: Ensure UFW status
+  ansible.builtin.command: ufw status
+  register: ufw_status
+
+- name: Display UFW status
+  debug:
+    var: ufw_status.stdout
 
 #- name: Download and extract Polkadot Full Node Rocksdb snapshot  (Optional)
 #  ansible.builtin.shell: |

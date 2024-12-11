@@ -1,5 +1,5 @@
 
-- name: Download polkadot binary
+- name: Download the polkadot binary
   become: true
   ansible.builtin.get_url:
     url: "{{ polkadot_base_url }}/polkadot"
@@ -32,7 +32,7 @@
   ansible.builtin.systemd:
     daemon_reload: true
 
-- name: Ensure Polkadot node service is running
+- name: Ensure the Polkadot node service is running
   become: true
   ansible.builtin.systemd:
     name: polkadot

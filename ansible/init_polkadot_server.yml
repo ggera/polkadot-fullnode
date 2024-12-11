@@ -3,4 +3,5 @@
   gather_facts: false
   serial: 1
   roles:
-    - update_polkadot_fullnodes
+    - { role: init_polkadot_server, become: yes }
+
