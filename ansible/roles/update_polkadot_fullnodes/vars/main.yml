@@ -1,6 +1,6 @@
 ---
 # vars file for update polkadot fullnode
-polkadot_version: "polkadot-stable2409" #This can be overriden via --extra-vars "polkadot_version=polkadot-stable2409-1" yet suggest GitOps
+polkadot_version: "polkadot-stable2409"
 polkadot_base_url: "https://github.com/paritytech/polkadot-sdk/releases/download/{{polkadot_version}}"
 install_dir: "/opt/polkadot"
 service_name: "polkadot"
