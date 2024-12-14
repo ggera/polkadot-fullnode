@@ -18,11 +18,13 @@ resource "hcloud_server" "full_nodes" {
         filesystem: ext4
     users:
       - name: polkadot
-        gecos: Root User
+        gecos: Polkadot User
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash
         lock_passwd: false
-        passwd: ${bcrypt(var.root_user_password)}
+        passwd: ${bcrypt(var.polkadot_user_password)}
+        ssh_authorized_keys:
+          - ${file("~/.ssh/id_ed25519.pub")} # Otherwise replace with your public key
 
     write_files:
       - path: /etc/ssh/sshd_config
@@ -30,11 +32,13 @@ resource "hcloud_server" "full_nodes" {
           Port ${var.ssh_port}
           PermitRootLogin yes
           PasswordAuthentication yes
+          PubkeyAuthentication yes
 
     runcmd:
       - systemctl restart sshd
   EOF
 }
+
 resource "hcloud_firewall" "ssh_firewall" {
   name = "ssh-firewall"
 
@@ -53,4 +57,3 @@ resource "hcloud_firewall" "ssh_firewall" {
     }
   }
 }
-

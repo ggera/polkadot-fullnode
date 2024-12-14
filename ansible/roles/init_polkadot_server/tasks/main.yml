@@ -52,7 +52,7 @@
 - name: Allow port 9616
   ansible.builtin.ufw:
     rule: allow
-    port: "{{ prometheus_port }}"
+    port: "{{ ssh_port }}"
     proto: tcp
 
 - name: Enable UFW

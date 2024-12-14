@@ -1,6 +1,12 @@
 # Infrastructure as Code (IaC) with Terraform & Ansible
 This setup uses Terraform to provision servers on Hetzner Cloud (Hcloud) and Ansible to configure and deploy Polkadot full nodes.
 
+
+### Prerequisite
+
+* ED25519 ssh key generated with default filename `~/.ssh/id_ed25519.pub` or (ssh-keygen -t ed25519 -C "your_email@example.com")
+* HCloud API Token
+
 ## Terraform
 
 Provision two servers on Hetzner Cloud with the required specifications to run Polkadot full nodes.
@@ -22,7 +28,7 @@ Provision two servers on Hetzner Cloud with the required specifications to run P
 Use the `init_polkadot_server.yml` playbook for initial server setup, which: configures the data path and exposes necessary ports.
  
    ```shell
-       ansible-playbook -i inventory.yml init_polkadot_server.yml
+       ansible-playbook -i inventory.yml init_polkadot_server.yml --ask-become
    
    ```   
 NB: This playbook is idempotent, meaning it can be safely re-run without causing issues.
@@ -39,7 +45,7 @@ If you follow Gitops principle, specify the desired Polkadot version in the vars
    ```
 Run the update playbook:
    ```shell
-   ansible-playbook -i inventory.yml update_polkadot_fullnode.yml
+   ansible-playbook -i inventory.yml update_polkadot_fullnode.yml --ask-become
    ```
 #### Option 2: Using Extra Variables
 Override the `polkadot_version` variable directly when running the playbook

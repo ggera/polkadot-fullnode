@@ -7,7 +7,7 @@ variable "hcloud_token" {
 variable "server_type" {  #https://www.hetzner.com/cloud/
   description = "Type of Hetzner server"
   type        = string
-  default     = "CCX53"
+  default     = "cx22"
 }
 
 variable "server_locations" {
@@ -22,8 +22,8 @@ variable "node_names" {
   default     = ["full-node-1", "full-node-2"]
 }
 
-variable "root_user_password" {
-  description = "Password for the root user"
+variable "polkadot_user_password" {
+  description = "Password for the polkadot user"
   type        = string
   sensitive   = true
 }
