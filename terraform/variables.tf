@@ -7,7 +7,7 @@ variable "hcloud_token" {
 variable "server_type" {  #https://www.hetzner.com/cloud/
   description = "Type of Hetzner server"
   type        = string
-  default     = "cx22"
+  default     = "ccx53"   #Choosing local NVMe SSDs
 }
 
 variable "server_locations" {
